@@ -11,5 +11,57 @@
     <body>
         <h1>111knuim-eaas</h1>
         <h2>111knuim-eaas</h2>
+        <button id="addBtn">Add New memo</button>
     </body>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp8mCXNYgVUMzq0p2tvZ1RbzvpCzauKJQ",
+            authDomain: "knu-project1.firebaseapp.com",
+            projectId: "knu-project1",
+            storageBucket: "knu-project1.appspot.com",
+            messagingSenderId: "317235543608",
+            appId: "1:317235543608:web:a5bd697c3463ed691270cd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+        const docRef = doc(db, "memo", "b98b16BYnyqPIiIfVmaL");
+        const docSnap = await getDoc(docRef);
+
+        // Get data
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            docSnap.data().map((item) => {
+                console.log(item);
+            });
+        } else {
+            console.log("No such document!");
+        }
+
+        // Add data
+        document.getElementById("addBtn").addEventListener("click", async() => {
+            try {
+                const title = document.getElementById("title").value;
+                const user = document.getElementById("user").value;
+                const body = document.getElementById("body").value;
+
+                console.log("title:", title, "user:", user, "body:", body);
+
+                const docRef = await addDoc(collection(db, "memo"), {
+                    title: title,
+                    user: user,
+                    body: body
+                });
+                console.log("Document written with ID: ", docRef.id);
+
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        });
+    </script>
 </html>

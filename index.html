@@ -15,7 +15,9 @@
     </body>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        let memo = [];
 
         const firebaseConfig = {
             apiKey: "AIzaSyCp8mCXNYgVUMzq0p2tvZ1RbzvpCzauKJQ",
@@ -36,9 +38,8 @@
         // Get data
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
-            docSnap.data().map((item) => {
-                console.log(item);
-            });
+            memo = docSnap.data().memoArray;
+            
         } else {
             console.log("No such document!");
         }
@@ -52,12 +53,15 @@
 
                 console.log("title:", title, "user:", user, "body:", body);
 
-                const docRef = await addDoc(collection(db, "memo"), {
+                memo.push({
                     title: title,
                     user: user,
                     body: body
                 });
-                console.log("Document written with ID: ", docRef.id);
+
+                await setDoc(doc(db, "memo", "b98b16BYnyqPIiIfVmaL"), {
+                    memoArray: memo
+                });
 
             } catch (e) {
                 console.error("Error adding document: ", e);
